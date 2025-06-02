@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "AlphaApiBackend": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7232",
+      "launchBrowser": false
+    }
+  }
+}
