@@ -1,0 +1,58 @@
+@page "/stock"
+@using BlazorApp.Shared;
+@inject HttpClient Http
+
+<h3>Stock Lookup</h3>
+
+<div class="mb-3">
+    <label>Stock Symbol:</label>
+    <input @bind="symbol" class="form-control" />
+    <button @onclick="GetStockData" class="btn btn-primary mt-2">Get Price</button>
+</div>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else if (stock != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5>@stock.Symbol</h5>
+            <p>Price: $@stock.Price</p>
+            <small class="text-muted">Last updated: @stock.LastUpdated</small>
+        </div>
+    </div>
+}
+
+@if (error != null)
+{
+    <div class="alert alert-danger mt-3">@error</div>
+}
+
+@code {
+    private StockData stock;
+    private string symbol = "AAPL";
+    private bool isLoading;
+    private string error;
+
+    private async Task GetStockData()
+    {
+        isLoading = true;
+        error = null;
+        StateHasChanged();
+        
+        try
+        {
+            stock = await Http.GetFromJsonAsync<StockData>($"api/GetStock?symbol={symbol}");
+        }
+        catch (Exception ex)
+        {
+            error = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
